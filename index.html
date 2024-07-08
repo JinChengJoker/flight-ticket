@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>机票预订单</title>
+    <link rel="stylesheet" href="./static/element-plus@2.5.6/index.css" />
+    <script src="./static/js/vue.global.prod.js"></script>
+    <script src="./static/element-plus@2.5.6/index.full.min.js"></script>
+    <script src="./static/element-plus@2.5.6/zh-cn.js"></script>
+  </head>
+  <body>
+    <div id="root">
+      <div style="max-width: 500px; margin: 0 auto">
+        <el-form
+          ref="formRef"
+          :model="formData"
+          :rules="rules"
+          label-width="120px"
+        >
+          <el-form-item label="姓名" prop="name">
+            <el-input v-model="formData.name" placeholder="请输入" />
+          </el-form-item>
+          <el-form-item label="出发日期" prop="departure_date">
+            <el-date-picker
+              v-model="formData.departure_date"
+              type="date"
+              placeholder="请选择"
+              :disabled-date="disabledDate"
+              value-format="YYYY-MM-DD"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitForm(formRef)">
+              生成
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
+
+    <script>
+      const { createApp, ref, reactive } = Vue;
+      const app = createApp({
+        setup() {
+          const formRef = ref();
+          const formData = reactive({
+            name: "",
+            departure_date: "",
+          });
+          const rules = reactive({
+            name: [{ required: true, message: "请输入", trigger: "submit" }],
+            departure_date: [
+              {
+                type: "date",
+                required: true,
+                message: "请选择",
+                trigger: "change",
+              },
+            ],
+          });
+          const disabledDate = (time) => {
+            return time.getTime() < Date.now();
+          };
+
+          const submitForm = async (formEl) => {
+            if (!formEl) return;
+            await formEl.validate((valid, fields) => {
+              if (valid) {
+                console.log("submit!", formData);
+                const searchParams = new URLSearchParams(formData);
+                window.open(
+                  `./flight-ticket.html?${searchParams.toString()}`,
+                  "_blank"
+                );
+              } else {
+                console.log("error submit!", fields);
+              }
+            });
+          };
+
+          return {
+            formRef,
+            formData,
+            submitForm,
+            rules,
+            disabledDate,
+          };
+        },
+      });
+      app.use(ElementPlus, {
+        locale: ElementPlusLocaleZhCn,
+      });
+      app.mount("#root");
+    </script>
+  </body>
+</html>

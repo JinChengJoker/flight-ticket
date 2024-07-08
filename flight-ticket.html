@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <title>TICKET</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!--<meta name="screen-orientation" content="portrait">-->
+    <!--<meta name="x5-orientation" content="portrait">-->
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="author" content="jin cheng" />
+    <meta name="generator" content="wkhtmltopdf" />
+    <meta name="description" content="" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0"
+    />
+    <script src="./static/js/polyfill.min.js"></script>
+    <script src="./static/js/jquery.min.js"></script>
+    <script src="./static/js/lodash.min.js"></script>
+    <script src="./static/js/bookjs-eazy.min.js"></script>
+    <script src="./static/js/vue.global.prod.js"></script>
+    <script src="./static/dayjs@1.11.10/dayjs.min.js"></script>
+    <script src="./static/dayjs@1.11.10/plugin/utc.js"></script>
+    <script src="./static/dayjs@1.11.10/plugin/timezone.js"></script>
+    <script src="./static/dayjs@1.11.10/plugin/duration.js"></script>
+    <script>
+      dayjs.extend(window.dayjs_plugin_utc);
+      dayjs.extend(window.dayjs_plugin_timezone);
+      dayjs.extend(window.dayjs_plugin_duration);
+    </script>
+    <script src="./data.js"></script>
+  </head>
+
+  <body>
+    <style>
+      body {
+        font-family: Courier, Arial, Helvetica, sans-serif;
+      }
+      p {
+        font-size: 10pt;
+        font-weight: normal;
+        line-height: 1.5em;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .blank-line {
+        height: 1.5em;
+      }
+      .flex {
+        display: flex;
+      }
+      .justify-between {
+        justify-content: space-between;
+      }
+      .flex-1 {
+        flex: 1;
+      }
+      .divide-y-1 {
+        border-top-width: 1px;
+        border-bottom-width: 0px;
+        border-color: rgb(0 0 0);
+        border-style: dashed;
+      }
+      .divide-y-2 {
+        border-top-width: 2px;
+        border-bottom-width: 0px;
+        border-color: rgb(0 0 0);
+        border-style: dashed;
+      }
+    </style>
+
+    <div id="content-box" style="display: none">
+      <p class="text-center">BOOKING REF: {{orderRefCode}}</p>
+      <p class="text-center">DATE: {{orderDateSting}}</p>
+      <div class="blank-line"></div>
+      <p class="text-center">{{name}}</p>
+
+      <div class="blank-line"></div>
+      <div class="blank-line"></div>
+
+      <div v-for="flight in ticket.flights">
+        <div class="flex justify-between">
+          <p>FLIGHT {{flight.flightNo}} - {{flight.marketAirlineName}}</p>
+          <p>{{flight.date}}</p>
+        </div>
+        <p v-if="flight.operateFlightNo">
+          OPERATED BY: {{flight.operateAirlineName}}, {{flight.operateFlightNo}}
+        </p>
+        <div class="divide-y-2"></div>
+        <div class="blank-line"></div>
+        <div class="flex justify-between">
+          <p>
+            DEPARTURE: {{flight.departureCityName}},
+            {{flight.departureCountryCode}} ({{flight.departureAirportName}})
+            <span v-if="flight.departureTerminal">
+              , TERMINAL {{flight.departureTerminal}}
+            </span>
+          </p>
+          <p>{{flight.departureDateTime}}</p>
+        </div>
+        <div class="flex justify-between">
+          <p>
+            ARRIVAL: {{flight.arrivalCityName}}, {{flight.arrivalCountryCode}}
+            ({{flight.arrivalAirportName}})
+            <span v-if="flight.arrivalTerminal">
+              , TERMINAL {{flight.arrivalTerminal}}
+            </span>
+          </p>
+          <p>{{flight.arrivalDateTime}}</p>
+        </div>
+        <div class="flex justify-between">
+          <p>
+            FLIGHT BOOKING REF: {{flight.marketAirlineCode}}/{{flightRefCode}}
+          </p>
+        </div>
+        <div class="flex justify-between">
+          <p>RESERVATION CONFIRMED, {{flight.cabin}}</p>
+          <p>DURATION: {{flight.durationFormatted}}</p>
+        </div>
+        <div class="divide-y-1"></div>
+        <div class="blank-line"></div>
+        <div class="flex">
+          <p class="flex-1">MEAL:</p>
+          <p class="flex-1">{{flight.meal}}</p>
+        </div>
+        <div class="blank-line"></div>
+        <p>
+          NON STOP {{flight.departureCityName}} TO {{flight.arrivalCityName}}
+        </p>
+        <div class="flex">
+          <p class="flex-1">EQUIPMENT:</p>
+          <p class="flex-1">{{flight.equipment}}</p>
+        </div>
+        <div class="blank-line"></div>
+        <div class="blank-line"></div>
+      </div>
+
+      <div class="blank-line"></div>
+      <p>
+        FLIGHT(S) CALCULATED AVERAGE CO2 EMISSIONS IS {{ticket.co2_emissions}}
+        KG/PERSON
+      </p>
+      <p>SOURCE: ICAO CARBON EMISSIONS CALCULATOR</p>
+      <p>
+        http://www.icao.int/environmental-protection/CarbonOffset/Pages/default.aspx
+      </p>
+
+      <div class="blank-line"></div>
+      <div class="blank-line"></div>
+
+      <p>
+        Data Protection Notice: Your personal data will be processed in
+        accordance with the applicable carrier’s privacy policy and, if your
+        booking is made via a reservation system provider (“GDS”), with its
+        privacy policy. These are available at or from the carrier or GDS
+        directly. You should read this documentation, which applies to your
+        booking and specifies, for example, how your personal data is collected,
+        stored, used, disclosed and transferred. (applicable for interline
+        carriage)
+      </p>
+    </div>
+
+    <script>
+      bookConfig = {
+        pageSize: "ISO_A4",
+        orientation: "portrait",
+        padding: "12.7mm 25.4mm 12.7mm 25.4mm",
+        simplePageNum: {
+          pageBegin: 0,
+          pageEnd: -1,
+        },
+        toolBar: {
+          serverPrint: false,
+          webPrint: true,
+          saveHtml: false,
+        },
+        start: false,
+      };
+    </script>
+    <script>
+      const monthNames = [
+        "JAN",
+        "FEB",
+        "MAR",
+        "APR",
+        "MAY",
+        "JUNE",
+        "JULY",
+        "AUG",
+        "SEPT",
+        "OCT",
+        "NOV",
+        "DEC",
+      ];
+      const weekNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+      const generateRandomString = (length) => {
+        var result = "";
+        var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+          result += characters.charAt(
+            Math.floor(Math.random() * charactersLength)
+          );
+        }
+        return result;
+      };
+    </script>
+    <script>
+      class Ticket {
+        constructor(date) {
+          // const departure = {
+          //   year: departureDate.getFullYear(),
+          //   month: departureDate.getMonth(),
+          //   date: departureDate.getDate(),
+          //   day: departureDate.getDay(),
+          // };
+          const flightData = Schedules[dayjs(date).day()];
+          const toDateTime = dayjs.tz(
+            `${date} ${flightData.flightSegments[0].time}`,
+            flightData.flightSegments[0].flights[0].departureTimeZone
+          );
+          const backDate = toDateTime.add(89, "day").format("YYYY-MM-DD");
+          const backDateTime = dayjs.tz(
+            `${backDate} ${flightData.flightSegments[1].time}`,
+            flightData.flightSegments[1].flights[0].departureTimeZone
+          );
+          const flights = [];
+          flightData.flightSegments[0].flights.reduce((duration, flight) => {
+            flights.push({
+              ...flight,
+              date: toDateTime
+                .add(duration + flight.transferDuration, "minute")
+                .tz(flight.departureTimeZone)
+                .format("ddd DD MMM YYYY"),
+              departureDateTime: toDateTime
+                .add(duration + flight.transferDuration, "minute")
+                .tz(flight.departureTimeZone)
+                .format("DD MMM HH:mm"),
+              arrivalDateTime: toDateTime
+                .add(
+                  duration + flight.transferDuration + flight.duration,
+                  "minute"
+                )
+                .tz(flight.arrivalTimeZone)
+                .format("DD MMM HH:mm"),
+              durationFormatted: dayjs.duration(flight.duration, 'minutes').format('HH:mm')
+            });
+            return duration + flight.transferDuration + flight.duration;
+          }, 0);
+          flightData.flightSegments[1].flights.reduce((duration, flight) => {
+            flights.push({
+              ...flight,
+              date: backDateTime
+                .add(duration + flight.transferDuration, "minute")
+                .tz(flight.departureTimeZone)
+                .format("ddd DD MMM YYYY"),
+              departureDateTime: backDateTime
+                .add(duration + flight.transferDuration, "minute")
+                .tz(flight.departureTimeZone)
+                .format("DD MMM HH:mm"),
+              arrivalDateTime: backDateTime
+                .add(
+                  duration + flight.transferDuration + flight.duration,
+                  "minute"
+                )
+                .tz(flight.arrivalTimeZone)
+                .format("DD MMM HH:mm"),
+              durationFormatted: dayjs.duration(flight.duration, 'minutes').format('HH:mm')
+            });
+            return duration + flight.transferDuration + flight.duration;
+          }, 0);
+
+          this.co2_emissions = flightData.co2_emissions;
+          this.flights = flights;
+        }
+      }
+    </script>
+    <script>
+      const { createApp } = Vue;
+      createApp({
+        setup() {
+          const searchParams = new URLSearchParams(window.location.search);
+          const name = searchParams.get("name");
+          const departureDate = searchParams.get("departure_date");
+          const currentDate = new Date();
+          const order = {
+            year: currentDate.getFullYear(),
+            month: currentDate.getMonth(),
+            date: currentDate.getDate(),
+          };
+          const orderDateSting = `${order.date} ${monthNames[order.month]} ${
+            order.year
+          }`;
+          const orderRefCode = generateRandomString(6);
+          const flightRefCode = generateRandomString(6);
+          const ticket = new Ticket(departureDate);
+          console.log(ticket);
+
+          return {
+            name,
+            orderDateSting,
+            orderRefCode,
+            flightRefCode,
+            ticket,
+          };
+        },
+      }).mount("#content-box");
+      bookConfig.start = true;
+    </script>
+  </body>
+</html>
