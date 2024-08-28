@@ -76,7 +76,7 @@
       <p class="text-center">BOOKING REF: {{orderRefCode}}</p>
       <p class="text-center">DATE: {{orderDateSting}}</p>
       <div class="blank-line"></div>
-      <p class="text-center">{{name}}</p>
+      <p class="text-center">{{name.trim().replace(/\s+/, '/').toLocaleUpperCase()}}</p>
 
       <div class="blank-line"></div>
       <div class="blank-line"></div>
