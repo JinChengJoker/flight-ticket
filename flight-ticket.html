@@ -76,7 +76,9 @@
       <p class="text-center">BOOKING REF: {{orderRefCode}}</p>
       <p class="text-center">DATE: {{orderDateSting}}</p>
       <div class="blank-line"></div>
-      <p class="text-center">{{name.trim().replace(/\s+/, '/').toLocaleUpperCase()}}</p>
+      <p class="text-center">
+        {{name.trim().replace(/\s+/, '/').toLocaleUpperCase()}}
+      </p>
 
       <div class="blank-line"></div>
       <div class="blank-line"></div>
@@ -246,7 +248,9 @@
                 )
                 .tz(flight.arrivalTimeZone)
                 .format("DD MMM HH:mm"),
-              durationFormatted: dayjs.duration(flight.duration, 'minutes').format('HH:mm')
+              durationFormatted: dayjs
+                .duration(flight.duration, "minutes")
+                .format("HH:mm"),
             });
             return duration + flight.transferDuration + flight.duration;
           }, 0);
@@ -268,7 +272,9 @@
                 )
                 .tz(flight.arrivalTimeZone)
                 .format("DD MMM HH:mm"),
-              durationFormatted: dayjs.duration(flight.duration, 'minutes').format('HH:mm')
+              durationFormatted: dayjs
+                .duration(flight.duration, "minutes")
+                .format("HH:mm"),
             });
             return duration + flight.transferDuration + flight.duration;
           }, 0);
@@ -280,11 +286,12 @@
     </script>
     <script>
       const { createApp } = Vue;
+      const searchParams = new URLSearchParams(window.location.search);
+      const name = searchParams.get("name");
+      const departureDate = searchParams.get("departure_date");
+      document.title = `${name.trim().replace(/\s+/, "-").toLocaleUpperCase()}-${departureDate}-TICKET`;
       createApp({
         setup() {
-          const searchParams = new URLSearchParams(window.location.search);
-          const name = searchParams.get("name");
-          const departureDate = searchParams.get("departure_date");
           const currentDate = new Date();
           const order = {
             year: currentDate.getFullYear(),
