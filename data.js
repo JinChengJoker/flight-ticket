@@ -430,7 +430,7 @@ const SZX_DUR = {
   ]
 }
 
-const Schedules = [SHA_JNB, SHA_JNB, SHA_JNB, SHA_JNB, SHA_JNB, SHA_JNB, SHA_JNB]
+// const Schedules = [SHA_JNB, SHA_JNB, SHA_JNB, SHA_JNB, SHA_JNB, SHA_JNB, SHA_JNB]
 // const Schedules = [SHA_DUR, SHA_DUR, SHA_DUR, SHA_DUR, SHA_DUR, SHA_DUR, SHA_DUR]
-// const Schedules = [SZX_JNB, SZX_JNB, SZX_JNB, SZX_JNB, SZX_JNB, SZX_JNB, SZX_JNB]
+const Schedules = [SZX_JNB, SZX_JNB, SZX_JNB, SZX_JNB, SZX_JNB, SZX_JNB, SZX_JNB]
 // const Schedules = [SZX_DUR, SZX_DUR, SZX_DUR, SZX_DUR, SZX_DUR, SZX_DUR, SZX_DUR]

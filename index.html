@@ -4,32 +4,92 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>机票预订单</title>
-    <link rel="stylesheet" href="./static/element-plus@2.5.6/index.css" />
-    <script src="./static/js/vue.global.prod.js"></script>
-    <script src="./static/element-plus@2.5.6/index.full.min.js"></script>
-    <script src="./static/element-plus@2.5.6/zh-cn.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/element-plus@2.8.8/dist/index.css"
+    />
+    <script src="https://unpkg.com/vue@3.4.19"></script>
+    <script src="https://unpkg.com/element-plus@2.8.8"></script>
+    <script src="https://unpkg.com/element-plus@2.8.8/dist/locale/zh-cn.js"></script>
+    <script src="./static/dayjs@1.11.10/dayjs.min.js"></script>
   </head>
   <body>
     <div id="root">
-      <div style="max-width: 500px; margin: 0 auto">
+      <div style="max-width: 800px; margin: 0 auto">
         <el-form
           ref="formRef"
           :model="formData"
           :rules="rules"
-          label-width="120px"
+          label-width="auto"
         >
-          <el-form-item label="姓名" prop="name">
-            <el-input v-model="formData.name" placeholder="请输入" />
-          </el-form-item>
-          <el-form-item label="出发日期" prop="departure_date">
-            <el-date-picker
-              v-model="formData.departure_date"
-              type="date"
-              placeholder="请选择"
-              :disabled-date="disabledDate"
-              value-format="YYYY-MM-DD"
-            />
-          </el-form-item>
+          <el-row :gutter="16">
+            <el-col :span="12">
+              <el-form-item label="姓名" prop="name">
+                <el-input v-model="formData.name" placeholder="请输入" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="16">
+            <el-col :span="12">
+              <el-form-item label="出发城市" prop="departure_city">
+                <el-select-v2
+                  v-model="formData.departure_city"
+                  placeholder="请选择"
+                  :options="cityOptions"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="到达城市" prop="arrival_city">
+                <el-select-v2
+                  v-model="formData.arrival_city"
+                  placeholder="请选择"
+                  :options="cityOptions"
+                />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="16">
+            <el-col :span="12">
+              <el-form-item label="路线" prop="route">
+                <el-radio-group v-model="formData.route">
+                  <el-radio value="oneway">单程</el-radio>
+                  <el-radio value="round">往返</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="16">
+            <el-col :span="12">
+              <el-form-item label="出发日期" prop="departure_date">
+                <el-date-picker
+                  v-model="formData.departure_date"
+                  type="date"
+                  placeholder="请选择"
+                  :disabled-date="disabledDate"
+                  value-format="YYYY-MM-DD"
+                  style="width: 100%"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12" v-if="formData.route === 'round'">
+              <el-form-item label="返程日期" prop="back_date">
+                <el-col :span="18">
+                  <el-date-picker
+                    v-model="formData.back_date"
+                    type="date"
+                    placeholder="请选择"
+                    :disabled-date="disabledDate"
+                    value-format="YYYY-MM-DD"
+                    style="width: 100%"
+                  />
+                </el-col>
+                <el-col :span="6">
+                  <el-button type="primary" text @click="quickSelect90Days">90天</el-button>
+                </el-col>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-form-item>
             <el-button type="primary" @click="submitForm(formRef)">
               生成
@@ -44,12 +104,25 @@
       const app = createApp({
         setup() {
           const formRef = ref();
+
           const formData = reactive({
             name: "",
+            departure_city: "",
+            arrival_city: "",
+            route: "",
             departure_date: "",
+            back_date: "",
           });
+
           const rules = reactive({
             name: [{ required: true, message: "请输入", trigger: "submit" }],
+            departure_city: [
+              { required: true, message: "请选择", trigger: "change" },
+            ],
+            arrival_city: [
+              { required: true, message: "请选择", trigger: "change" },
+            ],
+            route: [{ required: true, message: "请选择", trigger: "change" }],
             departure_date: [
               {
                 type: "date",
@@ -58,10 +131,34 @@
                 trigger: "change",
               },
             ],
+            back_date: [
+              {
+                type: "date",
+                required: true,
+                message: "请选择",
+                trigger: "change",
+              },
+            ],
           });
+
+          const cityOptions = [
+            { label: "上海", value: "sha" },
+            { label: "深圳", value: "szx" },
+            { label: "约翰内斯堡", value: "jnb" },
+            { label: "德班", value: "dur" },
+          ];
+
           const disabledDate = (time) => {
             return time.getTime() < Date.now();
           };
+
+          const quickSelect90Days = () => {
+            if (!formData.departure_date) {
+              alert("请先选择出发日期");
+              return;
+            }
+            formData.back_date = dayjs(formData.departure_date).add(89, "day").format("YYYY-MM-DD");
+          }
 
           const submitForm = async (formEl) => {
             if (!formEl) return;
@@ -82,9 +179,11 @@
           return {
             formRef,
             formData,
+            cityOptions,
             submitForm,
             rules,
             disabledDate,
+            quickSelect90Days,
           };
         },
       });

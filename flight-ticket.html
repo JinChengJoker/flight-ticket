@@ -212,19 +212,13 @@
     </script>
     <script>
       class Ticket {
-        constructor(date) {
-          // const departure = {
-          //   year: departureDate.getFullYear(),
-          //   month: departureDate.getMonth(),
-          //   date: departureDate.getDate(),
-          //   day: departureDate.getDay(),
-          // };
-          const flightData = Schedules[dayjs(date).day()];
+        constructor(params) {
+          const { departureDate, backDate, departureCity, arrivalCity, route } = params;
+          const flightData = Schedules[dayjs(departureDate).day()];
           const toDateTime = dayjs.tz(
-            `${date} ${flightData.flightSegments[0].time}`,
+            `${departureDate} ${flightData.flightSegments[0].time}`,
             flightData.flightSegments[0].flights[0].departureTimeZone
           );
-          const backDate = toDateTime.add(89, "day").format("YYYY-MM-DD");
           const backDateTime = dayjs.tz(
             `${backDate} ${flightData.flightSegments[1].time}`,
             flightData.flightSegments[1].flights[0].departureTimeZone
@@ -288,7 +282,11 @@
       const { createApp } = Vue;
       const searchParams = new URLSearchParams(window.location.search);
       const name = searchParams.get("name");
+      const route = searchParams.get("round");
+      const departureCity = searchParams.get("departure_city");
       const departureDate = searchParams.get("departure_date");
+      const arrivalCity = searchParams.get("arrival_city");
+      const backDate = searchParams.get("back_date");
       document.title = `${name.trim().replace(/\s+/, "-").toLocaleUpperCase()}-${departureDate}-TICKET`;
       createApp({
         setup() {
@@ -303,7 +301,13 @@
           }`;
           const orderRefCode = generateRandomString(6);
           const flightRefCode = generateRandomString(6);
-          const ticket = new Ticket(departureDate);
+          const ticket = new Ticket({
+            departureDate,
+            backDate,
+            departureCity,
+            arrivalCity,
+            route,
+          });
           console.log(ticket);
 
           return {
