@@ -31,28 +31,19 @@
           </el-row>
           <el-row :gutter="16">
             <el-col :span="12">
-              <el-form-item label="出发城市" prop="departure_city">
+              <el-form-item label="出发-到达" prop="route">
                 <el-select-v2
-                  v-model="formData.departure_city"
+                  v-model="formData.route"
                   placeholder="请选择"
-                  :options="cityOptions"
-                />
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="到达城市" prop="arrival_city">
-                <el-select-v2
-                  v-model="formData.arrival_city"
-                  placeholder="请选择"
-                  :options="cityOptions"
+                  :options="ROUTES"
                 />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="16">
             <el-col :span="12">
-              <el-form-item label="路线" prop="route">
-                <el-radio-group v-model="formData.route">
+              <el-form-item label="类型" prop="type">
+                <el-radio-group v-model="formData.type">
                   <el-radio value="oneway">单程</el-radio>
                   <el-radio value="round">往返</el-radio>
                 </el-radio-group>
@@ -69,10 +60,11 @@
                   :disabled-date="disabledDate"
                   value-format="YYYY-MM-DD"
                   style="width: 100%"
+                  @change="() => formData.back_date = ''"
                 />
               </el-form-item>
             </el-col>
-            <el-col :span="12" v-if="formData.route === 'round'">
+            <el-col :span="12" v-if="formData.type === 'round'">
               <el-form-item label="返程日期" prop="back_date">
                 <el-col :span="18">
                   <el-date-picker
@@ -99,6 +91,8 @@
       </div>
     </div>
 
+    <script src="./data.js"></script>
+    <script src="./routes.js"></script>
     <script>
       const { createApp, ref, reactive } = Vue;
       const app = createApp({
@@ -107,22 +101,16 @@
 
           const formData = reactive({
             name: "",
-            departure_city: "",
-            arrival_city: "",
             route: "",
+            type: "",
             departure_date: "",
             back_date: "",
           });
 
           const rules = reactive({
             name: [{ required: true, message: "请输入", trigger: "submit" }],
-            departure_city: [
-              { required: true, message: "请选择", trigger: "change" },
-            ],
-            arrival_city: [
-              { required: true, message: "请选择", trigger: "change" },
-            ],
             route: [{ required: true, message: "请选择", trigger: "change" }],
+            type: [{ required: true, message: "请选择", trigger: "change" }],
             departure_date: [
               {
                 type: "date",
@@ -140,13 +128,6 @@
               },
             ],
           });
-
-          const cityOptions = [
-            { label: "上海", value: "sha" },
-            { label: "深圳", value: "szx" },
-            { label: "约翰内斯堡", value: "jnb" },
-            { label: "德班", value: "dur" },
-          ];
 
           const disabledDate = (time) => {
             return time.getTime() < Date.now();
@@ -179,11 +160,11 @@
           return {
             formRef,
             formData,
-            cityOptions,
             submitForm,
             rules,
             disabledDate,
             quickSelect90Days,
+            ROUTES,
           };
         },
       });

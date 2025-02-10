@@ -30,7 +30,6 @@
       dayjs.extend(window.dayjs_plugin_timezone);
       dayjs.extend(window.dayjs_plugin_duration);
     </script>
-    <script src="./data.js"></script>
   </head>
 
   <body>
@@ -165,6 +164,9 @@
       </p>
     </div>
 
+    <script src="./data.js"></script>
+    <script src="./routes.js"></script>
+    <script src="./ticket.js"></script>
     <script>
       bookConfig = {
         pageSize: "ISO_A4",
@@ -183,21 +185,6 @@
       };
     </script>
     <script>
-      const monthNames = [
-        "JAN",
-        "FEB",
-        "MAR",
-        "APR",
-        "MAY",
-        "JUNE",
-        "JULY",
-        "AUG",
-        "SEPT",
-        "OCT",
-        "NOV",
-        "DEC",
-      ];
-      const weekNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
       const generateRandomString = (length) => {
         var result = "";
         var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -211,102 +198,31 @@
       };
     </script>
     <script>
-      class Ticket {
-        constructor(params) {
-          const { departureDate, backDate, departureCity, arrivalCity, route } = params;
-          const flightData = Schedules[dayjs(departureDate).day()];
-          const toDateTime = dayjs.tz(
-            `${departureDate} ${flightData.flightSegments[0].time}`,
-            flightData.flightSegments[0].flights[0].departureTimeZone
-          );
-          const backDateTime = dayjs.tz(
-            `${backDate} ${flightData.flightSegments[1].time}`,
-            flightData.flightSegments[1].flights[0].departureTimeZone
-          );
-          const flights = [];
-          flightData.flightSegments[0].flights.reduce((duration, flight) => {
-            flights.push({
-              ...flight,
-              date: toDateTime
-                .add(duration + flight.transferDuration, "minute")
-                .tz(flight.departureTimeZone)
-                .format("ddd DD MMM YYYY"),
-              departureDateTime: toDateTime
-                .add(duration + flight.transferDuration, "minute")
-                .tz(flight.departureTimeZone)
-                .format("DD MMM HH:mm"),
-              arrivalDateTime: toDateTime
-                .add(
-                  duration + flight.transferDuration + flight.duration,
-                  "minute"
-                )
-                .tz(flight.arrivalTimeZone)
-                .format("DD MMM HH:mm"),
-              durationFormatted: dayjs
-                .duration(flight.duration, "minutes")
-                .format("HH:mm"),
-            });
-            return duration + flight.transferDuration + flight.duration;
-          }, 0);
-          flightData.flightSegments[1].flights.reduce((duration, flight) => {
-            flights.push({
-              ...flight,
-              date: backDateTime
-                .add(duration + flight.transferDuration, "minute")
-                .tz(flight.departureTimeZone)
-                .format("ddd DD MMM YYYY"),
-              departureDateTime: backDateTime
-                .add(duration + flight.transferDuration, "minute")
-                .tz(flight.departureTimeZone)
-                .format("DD MMM HH:mm"),
-              arrivalDateTime: backDateTime
-                .add(
-                  duration + flight.transferDuration + flight.duration,
-                  "minute"
-                )
-                .tz(flight.arrivalTimeZone)
-                .format("DD MMM HH:mm"),
-              durationFormatted: dayjs
-                .duration(flight.duration, "minutes")
-                .format("HH:mm"),
-            });
-            return duration + flight.transferDuration + flight.duration;
-          }, 0);
-
-          this.co2_emissions = flightData.co2_emissions;
-          this.flights = flights;
-        }
-      }
-    </script>
-    <script>
       const { createApp } = Vue;
       const searchParams = new URLSearchParams(window.location.search);
       const name = searchParams.get("name");
-      const route = searchParams.get("round");
-      const departureCity = searchParams.get("departure_city");
+      const route = searchParams.get("route");
+      const type = searchParams.get("type");
       const departureDate = searchParams.get("departure_date");
-      const arrivalCity = searchParams.get("arrival_city");
       const backDate = searchParams.get("back_date");
       document.title = `${name.trim().replace(/\s+/, "-").toLocaleUpperCase()}-${departureDate}-TICKET`;
       createApp({
         setup() {
-          const currentDate = new Date();
-          const order = {
-            year: currentDate.getFullYear(),
-            month: currentDate.getMonth(),
-            date: currentDate.getDate(),
-          };
-          const orderDateSting = `${order.date} ${monthNames[order.month]} ${
-            order.year
-          }`;
+          let orderDateSting;
+          const now = dayjs();
+          if (now.day() === 0 || now.day() === 6) {
+            orderDateSting = now.subtract(2, "day").format("DD MMM YYYY");
+          } else {
+            orderDateSting = now.format("DD MMM YYYY");
+          }
           const orderRefCode = generateRandomString(6);
           const flightRefCode = generateRandomString(6);
           const ticket = new Ticket({
+            name,
+            route,
+            type,
             departureDate,
             backDate,
-            departureCity,
-            arrivalCity,
-            route,
           });
           console.log(ticket);
 
