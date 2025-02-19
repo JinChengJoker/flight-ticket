@@ -71,5 +71,14 @@ const ROUTES = [
     ],
     co2_emissions: '1222.54',
   },
+  {
+    label: "拉各斯-约翰内斯堡",
+    value: "los_jnb",
+    flights: [
+      [LOS_ADD_ET900, ADD_JNB_ET859],
+      [JNB_ADD_ET858, ADD_LOS_ET901],
+    ],
+    co2_emissions: '1323.47',
+  },
 ];
 
