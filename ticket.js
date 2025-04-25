@@ -16,6 +16,7 @@ class Ticket {
   makeFlights(flightData, departureDate) {
     let dDatetime, aDatetime;
     flightData.forEach((flight, index) => {
+      let crossDay = false;
       if (index === 0) {
         dDatetime = dayjs.tz(`${departureDate} ${flight.departureTime}`, flight.departureTimeZone)
       } else {
@@ -25,12 +26,16 @@ class Ticket {
         }
       }
       aDatetime = dDatetime.add(flight.duration, "minute").tz(flight.arrivalTimeZone)
+      if (dayjs(aDatetime.format("YYYY-MM-DD")).isAfter(dDatetime.format("YYYY-MM-DD"))) {
+        crossDay = true;
+      }
       this.flights.push({
         ...flight,
-        date: dDatetime.format("ddd DD MMM YYYY"),
-        departureDateTime: dDatetime.format("DD MMM HH:mm"),
-        arrivalDateTime: aDatetime.format("DD MMM HH:mm"),
+        date: dDatetime,
+        departureDateTime: dDatetime,
+        arrivalDateTime: aDatetime,
         durationFormatted: dayjs.duration(flight.duration, "minutes").format("HH:mm"),
+        crossDay,
       })
     })
   }

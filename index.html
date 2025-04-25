@@ -28,6 +28,11 @@
                 <el-input v-model="formData.name" placeholder="请输入" />
               </el-form-item>
             </el-col>
+            <el-col :span="12">
+              <el-form-item label="护照号" prop="passport_number">
+                <el-input v-model="formData.passport_number" placeholder="输入后会使用IATA出机票" />
+              </el-form-item>
+            </el-col>
           </el-row>
           <el-row :gutter="16">
             <el-col :span="12">
@@ -101,6 +106,7 @@
 
           const formData = reactive({
             name: "",
+            passport_number: "",
             route: "",
             type: "",
             departure_date: "",
@@ -147,10 +153,17 @@
               if (valid) {
                 console.log("submit!", formData);
                 const searchParams = new URLSearchParams(formData);
-                window.open(
-                  `./flight-ticket.html?${searchParams.toString()}`,
-                  "_blank"
-                );
+                if (formData.passport_number) {
+                  window.open(
+                    `./flight-ticket-iata.html?${searchParams.toString()}`,
+                    "_blank"
+                  );
+                } else {
+                  window.open(
+                    `./flight-ticket.html?${searchParams.toString()}`,
+                    "_blank"
+                  );
+                }
               } else {
                 console.log("error submit!", fields);
               }

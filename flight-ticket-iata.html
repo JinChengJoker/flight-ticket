@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <title>TICKET-IATA</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!--<meta name="screen-orientation" content="portrait">-->
+    <!--<meta name="x5-orientation" content="portrait">-->
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="author" content="jin cheng" />
+    <meta name="generator" content="wkhtmltopdf" />
+    <meta name="description" content="" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0"
+    />
+    <script src="./static/js/polyfill.min.js"></script>
+    <script src="./static/js/jquery.min.js"></script>
+    <script src="./static/js/lodash.min.js"></script>
+    <script src="./static/js/bookjs-eazy.min.js"></script>
+    <script src="./static/js/vue.global.prod.js"></script>
+    <script src="./static/dayjs@1.11.10/dayjs.min.js"></script>
+    <script src="./static/dayjs@1.11.10/plugin/utc.js"></script>
+    <script src="./static/dayjs@1.11.10/plugin/timezone.js"></script>
+    <script src="./static/dayjs@1.11.10/plugin/duration.js"></script>
+    <script>
+      dayjs.extend(window.dayjs_plugin_utc);
+      dayjs.extend(window.dayjs_plugin_timezone);
+      dayjs.extend(window.dayjs_plugin_duration);
+    </script>
+  </head>
+
+  <body>
+    <style>
+      body {
+        font-family: 'Times New Roman', Arial, Helvetica, sans-serif;
+      }
+      h1 {
+        font-size: 18pt;
+        font-weight: 600;
+        line-height: 1.5em;
+      }
+      p {
+        font-size: 14pt;
+        font-weight: 400;
+        line-height: 1.5em;
+      }
+      table {
+        th, td {
+          font-size: 10pt;
+          font-weight: 400;
+          line-height: 1.5em;
+          &:not([align]) {
+            text-align: center;
+          }
+        }
+      }
+      .blank-line {
+        height: 1.5em;
+      }
+      .divide-y-solid {
+        border-top-width: 1px;
+        border-bottom-width: 0px;
+        border-color: rgb(168, 168, 168);
+        border-style: solid;
+      }
+    </style>
+
+    <div id="content-box" style="display: none">
+      <div>
+        <img src="./static/images/iata-logo.png" alt="IATA" />
+      </div>
+
+      <div class="blank-line"></div>
+      <div class="divide-y-solid"></div>
+      <div class="blank-line"></div>
+      <div class="blank-line"></div>
+
+      <h1 style="text-align: center;">ITINERARY</h1>
+      <div class="blank-line"></div>
+      <div class="blank-line"></div>
+
+      <div style="display: flex; flex-wrap: wrap; font-size: 14pt; line-height: 1.5em; font-weight: 400;">
+        <div style="width: 50%;">
+          <span>AIRLINE PNR:</span>
+          <span>NK0HTF</span>
+        </div>
+        <div style="width: 50%;">
+          <span>1E PNR:</span>
+          <span>KYB0FE</span>
+        </div>
+        <div style="width: 50%;">
+          <span>NAME:</span>
+          <span>{{name.trim().replace(/\s+/, '/').toLocaleUpperCase()}}</span>
+        </div>
+        <div style="width: 50%;">
+          <span>ETKT NBR:</span>
+          <span>999-{{etktNbr}}</span>
+        </div>
+        <div style="width: 50%;">
+          <span>NUMBER:</span>
+          <span>{{passportNumber}}</span>
+        </div>
+        <div style="width: 50%;">
+          <span>CONJ NBR:</span>
+          <span></span>
+        </div>
+      </div>
+
+      <div class="blank-line"></div>
+
+      <div style="display: flex; flex-wrap: wrap; font-size: 14pt; line-height: 1.5em; font-weight: 400;">
+        <div style="width: 50%;">
+          <span>ISSUING AIRLINE:</span>
+          <span>{{ticket.flights[0].marketAirlineName}}</span>
+        </div>
+        <div style="width: 50%;">
+          <span>DATE OF ISSUE:</span>
+          <span>{{orderDateSting}}</span>
+        </div>
+      </div>
+
+      <div class="blank-line"></div>
+
+      <div style="display: flex; flex-wrap: wrap; font-size: 14pt; line-height: 1.5em; font-weight: 400;">
+        <div style="width: 50%;">
+          <span>ISSUING AGENT:</span>
+          <span></span>
+        </div>
+        <div style="width: 50%;">
+          <span>IATA CODE:</span>
+          <span>08315182</span>
+        </div>
+        <div style="width: 50%;">
+          <span>AGENCY ADDRESS:</span>
+          <span></span>
+        </div>
+        <div style="width: 50%;"></div>
+        <div style="width: 50%;">
+          <span>TEL:</span>
+          <span></span>
+        </div>
+        <div style="width: 50%;">
+          <span>FAX:</span>
+          <span></span>
+        </div>
+      </div>
+
+      <div class="blank-line"></div>
+      <div class="blank-line"></div>
+      <div class="divide-y-solid"></div>
+      
+      <table align="center">
+        <thead>
+          <tr>
+            <th rowspan="2">ORIGIN/DES</th>
+            <th rowspan="2">FLIGHT</th>
+            <th rowspan="2">DATE</th>
+            <th rowspan="2">TIME</th>
+            <th rowspan="2">ARRTIME</th>
+            <th rowspan="2">PERIOD</th>
+            <th rowspan="2">STATUS</th>
+            <th rowspan="2">ALLOW</th>
+            <th colspan="2">TERMINAL</th>
+          </tr>
+          <tr>
+            <th>Takeoff</th>
+            <th>Arrival</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="flight in ticket.flights">
+            <td>{{flight.departureAirportCode}}--{{flight.arrivalAirportCode}}</td>
+            <td>{{flight.flightNo}}</td>
+            <td>{{flight.date.format("DDMMM").toUpperCase()}}</td>
+            <td>{{flight.departureDateTime.format("HHmm")}}</td>
+            <td>{{flight.arrivalDateTime.format("HHmm")}}{{flight.crossDay ? "+1" : ""}}</td>
+            <td>{{flight.departureDateTime.format("DDMMM").toUpperCase()}}/{{flight.arrivalDateTime.format("DDMMM").toUpperCase()}}</td>
+            <td>OK</td>
+            <td>1PC</td>
+            <td>{{flight.departureTerminal || "-"}}</td>
+            <td>{{flight.arrivalTerminal || "-"}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="blank-line"></div>
+      <div class="blank-line"></div>
+      <div class="blank-line"></div>
+      <div class="blank-line"></div>
+
+      <div style="display: flex; flex-wrap: wrap; font-size: 14pt; line-height: 1.5em; font-weight: 400;">
+        <div style="width: 50%;">
+          <span>FARE CALCULATION:</span>
+        </div>
+      </div>
+
+      <div class="blank-line"></div>
+
+      <div style="display: flex; flex-wrap: wrap; font-size: 14pt; line-height: 1.5em; font-weight: 400;">
+        <div style="width: 50%;">
+          <span>FORM OF PAYMENT:</span>
+        </div>
+        <div style="width: 50%;">
+          <span>TAX:</span>
+        </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; font-size: 14pt; line-height: 1.5em; font-weight: 400;">
+        <div style="width: 50%;">
+          <span>FARE:</span>
+        </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; font-size: 14pt; line-height: 1.5em; font-weight: 400;">
+        <div style="width: 50%;">
+          <span>TOTAL:</span>
+        </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; font-size: 14pt; line-height: 1.5em; font-weight: 400;">
+        <div>
+          <span>RESTRICTIONS:</span>
+          <span>Q/NON-END/PENALTY APPLY</span>
+        </div>
+      </div>
+    </div>
+
+    <script src="./data.js"></script>
+    <script src="./routes.js"></script>
+    <script src="./ticket.js"></script>
+    <script>
+      bookConfig = {
+        pageSize: "ISO_A4",
+        orientation: "portrait",
+        padding: "12.7mm 25.4mm 12.7mm 25.4mm",
+        simplePageNum: {
+          pageBegin: 0,
+          pageEnd: -1,
+        },
+        toolBar: {
+          serverPrint: false,
+          webPrint: true,
+          saveHtml: false,
+        },
+        start: false,
+      };
+    </script>
+    <script>
+      const generateRandomString = (length) => {
+        var result = "";
+        var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+          result += characters.charAt(
+            Math.floor(Math.random() * charactersLength)
+          );
+        }
+        return result;
+      };
+    </script>
+    <script>
+      const { createApp } = Vue;
+      const searchParams = new URLSearchParams(window.location.search);
+      const name = searchParams.get("name");
+      const passportNumber = searchParams.get("passport_number");
+      const route = searchParams.get("route");
+      const type = searchParams.get("type");
+      const departureDate = searchParams.get("departure_date");
+      const backDate = searchParams.get("back_date");
+      document.title = `${name.trim().replace(/\s+/, "-").toLocaleUpperCase()}-${departureDate}-TICKET-IATA`;
+      createApp({
+        setup() {
+          let orderDateSting;
+          const now = dayjs();
+          if (now.day() === 0 || now.day() === 6) {
+            orderDateSting = now.subtract(2, "day").format("DDMMMYY").toUpperCase();
+          } else {
+            orderDateSting = now.format("DDMMMYY").toUpperCase();
+          }
+          const etktNbr = Math.floor(1000000000 + Math.random() * 9000000000);
+          const ticket = new Ticket({
+            name,
+            route,
+            type,
+            departureDate,
+            backDate,
+          });
+          console.log(ticket);
+
+          return {
+            name,
+            passportNumber,
+            orderDateSting,
+            etktNbr,
+            ticket,
+          };
+        },
+      }).mount("#content-box");
+      bookConfig.start = true;
+    </script>
+  </body>
+</html>

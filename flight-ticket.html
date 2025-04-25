@@ -85,7 +85,7 @@
       <div v-for="flight in ticket.flights">
         <div class="flex justify-between">
           <p>FLIGHT {{flight.flightNo}} - {{flight.marketAirlineName}}</p>
-          <p>{{flight.date}}</p>
+          <p>{{flight.date.format("ddd DD MMM YYYY")}}</p>
         </div>
         <p v-if="flight.operateFlightNo">
           OPERATED BY: {{flight.operateAirlineName}}, {{flight.operateFlightNo}}
@@ -100,7 +100,7 @@
               , TERMINAL {{flight.departureTerminal}}
             </span>
           </p>
-          <p>{{flight.departureDateTime}}</p>
+          <p>{{flight.departureDateTime.format("DD MMM HH:mm")}}</p>
         </div>
         <div class="flex justify-between">
           <p>
@@ -110,7 +110,7 @@
               , TERMINAL {{flight.arrivalTerminal}}
             </span>
           </p>
-          <p>{{flight.arrivalDateTime}}</p>
+          <p>{{flight.arrivalDateTime.format("DD MMM HH:mm")}}</p>
         </div>
         <div class="flex justify-between">
           <p>
