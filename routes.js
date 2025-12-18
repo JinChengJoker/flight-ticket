@@ -80,5 +80,14 @@ const ROUTES = [
     ],
     co2_emissions: '1323.47',
   },
+  {
+    label: "约翰内斯堡-科伦坡",
+    value: "jnb_cmb",
+    flights: [
+      [JNB_DXB_EK764, DXB_CMB_EK348],
+      [CMB_DXB_EK349, DXB_JNB_EK763],
+    ],
+    co2_emissions: '1050.27',
+  },
 ];
 
