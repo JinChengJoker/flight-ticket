@@ -89,5 +89,13 @@ const ROUTES = [
     ],
     co2_emissions: '1050.27',
   },
+  {
+    label: "北京-伊丽莎白港",
+    value: "pek_plz",
+    flights: [
+      [PEK_ADD_ET605, ADD_JNB_ET809, JNB_PLZ_4Z797],
+      [PLZ_JNB_4Z792, JNB_ADD_ET808, ADD_PEK_ET604],
+    ],
+    co2_emissions: '1768.46',
+  },
 ];
-

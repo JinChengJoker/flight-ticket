@@ -21,7 +21,7 @@ class Ticket {
         dDatetime = dayjs.tz(`${departureDate} ${flight.departureTime}`, flight.departureTimeZone)
       } else {
         dDatetime = dayjs.tz(`${aDatetime.format("YYYY-MM-DD")} ${flight.departureTime}`, flight.departureTimeZone)
-        if (dayjs(flight.departureTime).isBefore(dayjs(aDatetime.format("HH:mm")))) {
+        if (!dDatetime.isAfter(aDatetime)) {
           dDatetime = dDatetime.add(1, "day")
         }
       }
