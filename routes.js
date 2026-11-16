@@ -98,4 +98,13 @@ const ROUTES = [
     ],
     co2_emissions: '1768.46',
   },
+  {
+    label: "卡拉奇-约翰内斯堡",
+    value: "khi_jnb",
+    flights: [
+      [KHI_ADD_ET695, ADD_JNB_ET859],
+      [JNB_ADD_ET858, ADD_KHI_ET694],
+    ],
+    co2_emissions: '1044.00',
+  },
 ];
